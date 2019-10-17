@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - cluster.name=my-cluster
+      - node.name=es01
+    ports:
+      - 9200:9200
+    volumes:
+      - ./volumes/esdata01:/usr/share/elasticsearch/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "3m"
+        max-file: "1"
+
+  web:
+    image: flask_es
+    env_file:
+      - ./src/config/config.env
+    command: flask run --host=0.0.0.0 --port=5000
+    volumes:
+      - ./src:/code
+    ports:
+      - 5000:5000
+    restart: always

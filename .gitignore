@@ -1,0 +1,5 @@
+.idea
+venv
+volumes
+__pycache__
+*.pyc
